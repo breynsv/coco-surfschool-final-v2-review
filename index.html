@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Coco Surf School — Wijzigingen doorgeven</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='88'%3E%F0%9F%8F%84%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f2ea;--seafoam:#e2ede7;--seafoam-2:#cfe1d8;--sage:#8aa194;--sage-deep:#4f6a5f;
+    --sage-ink:#34473f;--clay:#c2876a;--clay-soft:#e8d3c5;--ink:#2e2b26;--ink-soft:#6c655a;
+    --line:rgba(46,43,38,.16);--line-soft:rgba(46,43,38,.08);--r:14px;
+    --display:'Fraunces',Georgia,serif;--body:ui-sans-serif,-apple-system,'Segoe UI',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--body);color:var(--ink);background:var(--sage-ink);display:flex;flex-direction:column;overflow:hidden}
+  button,input,select,textarea{font-family:inherit}
+  /* toolbar */
+  .bar{flex:none;background:var(--sage-ink);color:#f2efe8;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:9px 14px}
+  .bar .brand{font-family:var(--display);font-size:1.05rem;font-weight:500;display:flex;align-items:center;gap:8px;margin-right:4px}
+  .bar .brand span{font-size:1.3rem}
+  .bar select{background:#fff;border:0;border-radius:999px;padding:.5em 2em .5em .9em;font-size:.9rem;font-weight:600;color:var(--ink);cursor:pointer;
+    -webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c655a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .6em center;background-size:15px}
+  .langs{display:flex;gap:3px;background:rgba(255,255,255,.12);border-radius:999px;padding:3px}
+  .langs button{background:transparent;border:0;color:#dfe6e0;font-size:.72rem;font-weight:700;letter-spacing:.04em;padding:.36em .7em;border-radius:999px;cursor:pointer}
+  .langs button.on{background:#fff;color:var(--sage-ink)}
+  .mode{display:flex;align-items:center;gap:8px;font-size:.8rem;color:#dfe6e0;cursor:pointer;user-select:none;margin-left:2px}
+  .switch{width:40px;height:23px;border-radius:999px;background:rgba(255,255,255,.25);position:relative;transition:.2s;flex:none}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:19px;height:19px;border-radius:50%;background:#fff;transition:.2s}
+  .mode.on .switch{background:var(--clay)}
+  .mode.on .switch::after{left:19px}
+  .spacer{margin-left:auto}
+  .count{font-size:.82rem;color:#c7d2cb}
+  .count b{color:#fff;font-size:1rem}
+  .tbtn{cursor:pointer;border:0;font-weight:600;font-size:.85rem;padding:.6em 1em;border-radius:999px;display:inline-flex;align-items:center;gap:.4em}
+  .tbtn.copy{background:var(--clay);color:#fff}
+  .tbtn.dl{background:#fff;color:var(--sage-ink)}
+  .tbtn.clear{background:transparent;color:#c7d2cb;border:1px solid rgba(255,255,255,.25)}
+  /* stage */
+  .stage{flex:1;position:relative;background:var(--paper)}
+  iframe{width:100%;height:100%;border:0;display:block;background:var(--paper)}
+  .stage.comment iframe{cursor:crosshair}
+  /* onboarding hint */
+  .hint{position:absolute;left:50%;top:16px;transform:translateX(-50%);z-index:20;background:var(--sage-ink);color:#fff;
+    padding:.7em 1.2em;border-radius:999px;font-size:.9rem;font-weight:600;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);display:flex;align-items:center;gap:10px}
+  .hint button{background:rgba(255,255,255,.2);border:0;color:#fff;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:13px}
+  /* editor popover */
+  .editor{position:fixed;right:16px;bottom:16px;width:340px;max-width:calc(100vw - 32px);background:#fff;border-radius:var(--r);
+    box-shadow:0 24px 60px -20px rgba(0,0,0,.5);border:1px solid var(--line-soft);z-index:60;overflow:hidden;display:none}
+  .editor.show{display:block}
+  .ed-head{background:var(--seafoam);padding:12px 16px;display:flex;align-items:center;gap:10px}
+  .ed-num{width:26px;height:26px;border-radius:50%;background:var(--clay);color:#fff;font-weight:700;font-size:.85rem;display:grid;place-items:center;flex:none}
+  .ed-head .ctx{font-size:.82rem;color:var(--ink-soft);line-height:1.3}
+  .ed-head .ctx b{color:var(--ink);font-family:var(--display);font-weight:500;display:block;font-size:.95rem}
+  .ed-body{padding:14px 16px 16px}
+  .status{display:flex;gap:6px;margin-bottom:10px}
+  .status button{flex:1;cursor:pointer;font-size:.78rem;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);padding:.45em;border-radius:9px}
+  .status button[data-s=ok].on{background:var(--sage-ink);border-color:var(--sage-ink);color:#fff}
+  .status button[data-s=change].on{background:var(--clay);border-color:var(--clay);color:#fff}
+  .status button[data-s=remove].on{background:#b5544a;border-color:#b5544a;color:#fff}
+  .editor textarea{width:100%;border:1.5px solid var(--line);background:var(--paper);border-radius:10px;padding:.7em .8em;font-size:.95rem;color:var(--ink);resize:vertical;min-height:70px}
+  .editor textarea:focus{outline:none;border-color:var(--sage-deep);box-shadow:0 0 0 3px rgba(138,161,148,.22)}
+  .photo{margin-top:10px}
+  .photo label{display:inline-flex;align-items:center;gap:.4em;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--sage-deep);border:1.5px dashed var(--line);border-radius:999px;padding:.4em .8em}
+  .photo input{position:absolute;width:1px;height:1px;opacity:0}
+  .thumbs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .thumb{position:relative;width:60px;height:60px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb button{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;border:0;background:rgba(46,43,38,.75);color:#fff;cursor:pointer;font-size:11px;line-height:1}
+  .ed-foot{display:flex;gap:8px;margin-top:14px}
+  .ed-foot .del{background:transparent;border:0;color:#b5544a;font-weight:600;font-size:.85rem;cursor:pointer;padding:.5em}
+  .ed-foot .done{margin-left:auto;background:var(--sage-ink);color:#fff;border:0;border-radius:999px;padding:.55em 1.3em;font-weight:600;cursor:pointer}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);color:#fff;padding:.75em 1.3em;border-radius:999px;font-size:.9rem;font-weight:600;transition:.3s;pointer-events:none;z-index:100}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* how-to overlay */
+  .help-ov{position:fixed;inset:0;z-index:200;background:rgba(46,43,38,.55);backdrop-filter:blur(3px);display:none;place-items:center;padding:20px}
+  .help-ov.show{display:grid}
+  .help-card{background:#fff;border-radius:18px;max-width:450px;padding:26px 26px 22px;box-shadow:0 30px 80px -20px rgba(0,0,0,.5)}
+  .help-card h2{font-family:var(--display);font-size:1.45rem;margin:0 0 14px;color:var(--ink)}
+  .help-card ol{margin:0 0 14px;padding-left:1.25em;color:var(--ink)}
+  .help-card li{margin-bottom:8px}
+  .help-card .note{background:var(--seafoam);border-radius:10px;padding:12px 14px;font-size:.86rem;line-height:1.5;color:var(--sage-deep);margin:0 0 16px}
+  .help-card .who{display:flex;gap:8px;margin-bottom:16px}
+  .help-card .who input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:9px;padding:.55em .7em;font:inherit;font-size:.9rem;color:var(--ink)}
+  .help-card .who input:focus{outline:none;border-color:var(--sage-deep)}
+  .help-card #help-go{background:var(--clay);color:#fff;border:0;border-radius:999px;padding:.72em 1.5em;font-weight:700;font-size:.95rem;cursor:pointer}
+  @media (max-width:560px){
+    .bar .brand span{font-size:1.1rem}.bar .brand{font-size:.9rem}
+    .editor{left:8px;right:8px;bottom:8px;width:auto}
+    .mode span.lbl{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="brand"><span>🏄</span> Wijzigingen</div>
+  <select id="page-sel" aria-label="Kies pagina"></select>
+  <div class="langs" id="langs">
+    <button data-l="nl" class="on">NL</button><button data-l="fr">FR</button><button data-l="en">EN</button>
+  </div>
+  <div class="mode on" id="mode" role="switch" aria-checked="true" title="Aan: klikken plaatst een opmerking. Uit: gebruik de website normaal.">
+    <span class="switch"></span><span class="lbl">Klik = opmerking</span>
+  </div>
+  <span class="spacer"></span>
+  <span class="count"><b id="n">0</b> opmerkingen</span>
+  <button class="tbtn copy" id="btn-copy">📋 Kopieer</button>
+  <button class="tbtn dl" id="btn-dl">⬇ Download</button>
+  <button class="tbtn clear" id="btn-clear">Wis</button>
+  <button class="tbtn clear" id="btn-help" title="Hoe werkt dit?" style="min-width:34px">?</button>
+</div>
+
+<div class="stage comment" id="stage">
+  <iframe id="frame" title="Coco Surf School"></iframe>
+  <div class="hint" id="hint">👆 Klik ergens op de website om een opmerking te plaatsen <button id="hint-x" aria-label="sluiten">×</button></div>
+</div>
+
+<!-- editor -->
+<div class="editor" id="editor">
+  <div class="ed-head">
+    <div class="ed-num" id="ed-num">1</div>
+    <div class="ctx"><b id="ed-ctx">Sectie</b><span id="ed-snip"></span></div>
+  </div>
+  <div class="ed-body">
+    <div class="status" id="ed-status">
+      <button data-s="ok">OK</button><button data-s="change">Aanpassen</button><button data-s="remove">Verwijderen</button>
+    </div>
+    <textarea id="ed-text" placeholder="Wat moet er hier veranderen?"></textarea>
+    <div class="photo">
+      <label>📷 Foto toevoegen<input type="file" id="ed-file" accept="image/*" multiple></label>
+      <div class="thumbs" id="ed-thumbs"></div>
+    </div>
+    <div class="ed-foot">
+      <button class="del" id="ed-del">🗑 Verwijder opmerking</button>
+      <button class="done" id="ed-done">Klaar</button>
+    </div>
+  </div>
+</div>
+
+<div class="help-ov" id="help-ov">
+  <div class="help-card">
+    <h2>🏄 Zo geef je wijzigingen door</h2>
+    <ol>
+      <li><b>Klik ergens op de website</b> en typ wat er moet veranderen.</li>
+      <li>Kies <b>OK</b>, <b>Aanpassen</b> of <b>Verwijderen</b>. Een nieuwe foto? Klik <b>📷</b>.</li>
+      <li>Wissel van pagina met de knop <b>bovenaan</b> (▼).</li>
+      <li>Klaar? Klik <b>📋 Kopieer</b> (plak in WhatsApp of e-mail) of <b>⬇ Download</b>.</li>
+    </ol>
+    <p class="note">✅ Je opmerkingen én foto’s blijven bewaard in deze browser — ook als je de pagina ververst of later terugkomt. Werk wel op <b>hetzelfde toestel en dezelfde browser</b>, en verstuur je feedback zelf via Kopieer of Download.</p>
+    <div class="who"><input id="who-name" placeholder="Jouw naam (optioneel)"><input id="who-date" placeholder="Datum (optioneel)"></div>
+    <button id="help-go">Aan de slag →</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const LIVE='https://breynsv.github.io/coco-surfschool-final-v2/';
+const BASEPATH='/coco-surfschool-final-v2/';
+const PAGES=[
+  ['home','Startpagina',{fr:'',en:'',nl:''}],
+  ['lessons','Lessen & tarieven',{fr:'cours-de-surf',en:'surf-lessons',nl:'surflessen'}],
+  ['coach','Coach (Annelies)',{fr:'monitrice-de-surf',en:'surf-coach',nl:'surfcoach'}],
+  ['stay','Verblijf',{fr:'hebergement',en:'accommodation',nl:'accommodatie'}],
+  ['contact','Contact',{fr:'contact',en:'contact',nl:'contact'}],
+  ['hossegor','Surfen in Hossegor',{fr:'cours-de-surf-hossegor',en:'surf-lessons-hossegor',nl:'surflessen-hossegor'}],
+  ['seignosse','Surfen in Seignosse',{fr:'cours-de-surf-seignosse',en:'surf-lessons-seignosse',nl:'surflessen-seignosse'}],
+  ['team','Teambuilding',{fr:'team-building-surf',en:'team-building',nl:'surf-teambuilding'}],
+  ['learn','Leren surfen',{fr:'apprendre-a-surfer',en:'learn-to-surf',nl:'leren-surfen'}],
+];
+const KEYMAP={}; PAGES.forEach(p=>KEYMAP[p[0]]=p);
+const STATUS_LABEL={ok:'OK',change:'AANPASSEN',remove:'VERWIJDEREN'};
+const LS='coco-annot-v1';
+
+let store=load();               // {pins:[], counter, name, date, lang}
+const filesByPin={};            // id -> [{name, blob, dbKey}]
+
+/* ---------- photo persistence (IndexedDB, survives refresh/reopen) ---------- */
+let _db=null;
+function idb(){ return new Promise((res,rej)=>{ if(_db)return res(_db); const r=indexedDB.open('coco-review',1);
+  r.onupgradeneeded=()=>{ const s=r.result.createObjectStore('photos',{autoIncrement:true}); s.createIndex('pin','pinId',{unique:false}); };
+  r.onsuccess=()=>{_db=r.result;res(_db);}; r.onerror=()=>rej(r.error); }); }
+async function idbAdd(pinId,file){ const db=await idb(); return new Promise((res,rej)=>{ const tx=db.transaction('photos','readwrite'); const rq=tx.objectStore('photos').add({pinId,name:file.name,blob:file}); rq.onsuccess=()=>res(rq.result); rq.onerror=()=>rej(rq.error); }); }
+async function idbDel(key){ const db=await idb(); return new Promise(res=>{ const tx=db.transaction('photos','readwrite'); tx.objectStore('photos').delete(key); tx.oncomplete=res; tx.onerror=res; }); }
+async function idbDelPin(pinId){ const db=await idb(); return new Promise(res=>{ const tx=db.transaction('photos','readwrite'); const rq=tx.objectStore('photos').index('pin').openCursor(IDBKeyRange.only(pinId)); rq.onsuccess=()=>{const c=rq.result;if(c){c.delete();c.continue();}}; tx.oncomplete=res; tx.onerror=res; }); }
+async function idbClear(){ const db=await idb(); return new Promise(res=>{ const tx=db.transaction('photos','readwrite'); tx.objectStore('photos').clear(); tx.oncomplete=res; tx.onerror=res; }); }
+async function idbAll(){ const db=await idb(); return new Promise(res=>{ const out=[]; const tx=db.transaction('photos','readonly'); const rq=tx.objectStore('photos').openCursor(); rq.onsuccess=()=>{const c=rq.result; if(c){out.push({key:c.key,...c.value});c.continue();} else res(out);}; tx.onerror=()=>res(out); }); }
+let mode='comment';             // 'comment' | 'browse'
+let activeId=null;
+
+function load(){ try{ const s=JSON.parse(localStorage.getItem(LS)); if(s&&s.pins) return s; }catch(e){} return {pins:[],counter:0,lang:'nl'}; }
+function save(){ localStorage.setItem(LS,JSON.stringify({pins:store.pins,counter:store.counter,name:store.name,date:store.date,lang:store.lang})); }
+
+const frame=document.getElementById('frame');
+const stage=document.getElementById('stage');
+let curLang=store.lang||'nl', curKey='home';
+
+function urlFor(lang,key){ const slug=KEYMAP[key][2][lang]; return LIVE+lang+'/'+(slug?slug+'/':''); }
+function loadPage(lang,key){ curLang=lang; curKey=key; store.lang=lang; save(); frame.src=urlFor(lang,key); syncBar(); }
+
+// page dropdown
+const sel=document.getElementById('page-sel');
+PAGES.forEach(([k,label])=>{ const o=document.createElement('option'); o.value=k; o.textContent=label; sel.appendChild(o); });
+sel.addEventListener('change',()=>loadPage(curLang,sel.value));
+document.querySelectorAll('#langs button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#langs button').forEach(x=>x.classList.toggle('on',x===b));
+  loadPage(b.dataset.l,curKey);
+}));
+function syncBar(){ sel.value=curKey; document.querySelectorAll('#langs button').forEach(x=>x.classList.toggle('on',x.dataset.l===curLang)); }
+
+// mode toggle
+const modeEl=document.getElementById('mode');
+modeEl.addEventListener('click',()=>{
+  mode=mode==='comment'?'browse':'comment';
+  modeEl.classList.toggle('on',mode==='comment');
+  modeEl.setAttribute('aria-checked',mode==='comment');
+  stage.classList.toggle('comment',mode==='comment');
+});
+
+// hint
+document.getElementById('hint-x').addEventListener('click',()=>document.getElementById('hint').style.display='none');
+
+/* ---------- iframe injection ---------- */
+frame.addEventListener('load',onFrameLoad);
+function onFrameLoad(){
+  let doc,win;
+  try{ doc=frame.contentDocument; win=frame.contentWindow; if(!doc) return; }catch(e){ return; }
+  // detect current page from URL
+  try{
+    const path=win.location.pathname; const rest=path.startsWith(BASEPATH)?path.slice(BASEPATH.length):path.replace(/^\//,'');
+    const parts=rest.split('/').filter(Boolean); const lang=parts[0]||'nl'; const slug=parts[1]||'';
+    const found=PAGES.find(p=>p[2][lang]===slug); if(found){ curKey=found[0]; curLang=lang; syncBar(); }
+  }catch(e){}
+  injectStyle(doc);
+  doc.addEventListener('click',onDocClick,true);
+  renderPins(doc);
+}
+function injectStyle(doc){
+  if(doc.getElementById('__rev-style')) return;
+  const s=doc.createElement('style'); s.id='__rev-style';
+  s.textContent='.__rev-pin{position:absolute;z-index:2147483000;width:28px;height:28px;transform:translate(-50%,-100%);cursor:pointer;font-family:ui-sans-serif,system-ui,sans-serif}'
+   +'.__rev-pin .b{width:28px;height:28px;border-radius:50% 50% 50% 2px;background:#c2876a;box-shadow:0 3px 10px -2px rgba(0,0,0,.5);transform:rotate(45deg);display:grid;place-items:center}'
+   +'.__rev-pin .n{transform:rotate(-45deg);color:#fff;font-weight:700;font-size:13px}'
+   +'.__rev-pin.ok .b{background:#34473f}.__rev-pin.remove .b{background:#b5544a}';
+  (doc.head||doc.documentElement).appendChild(s);
+}
+function onDocClick(e){
+  const doc=e.target.ownerDocument;
+  const pinEl=e.target.closest('.__rev-pin');
+  if(pinEl){ e.preventDefault();e.stopPropagation(); openEditor(pinEl.dataset.id); return; }
+  if(mode!=='comment') return;          // browse mode: let the site work
+  e.preventDefault(); e.stopPropagation();
+  const el=e.target;
+  const rect=el.getBoundingClientRect();
+  const fx=rect.width?(e.clientX-rect.left)/rect.width:0.5;
+  const fy=rect.height?(e.clientY-rect.top)/rect.height:0.5;
+  const ctx=context(el);
+  store.counter++;
+  const pin={ id:'p'+store.counter, n:store.counter, page:curKey, lang:curLang, sel:cssPath(el),
+    fx,fy, pageX:e.pageX, pageY:e.pageY, sec:ctx.secLabel, snip:ctx.snip, status:null, comment:'' };
+  store.pins.push(pin); save();
+  renderPins(doc); refresh();
+  openEditor(pin.id);
+}
+function cssPath(el){
+  try{
+    if(!el||el.nodeType!==1) return '';
+    if(el.id) return '#'+CSS.escape(el.id);
+    const parts=[];
+    while(el&&el.nodeType===1&&el.tagName.toLowerCase()!=='html'&&el.tagName.toLowerCase()!=='body'){
+      let s=el.tagName.toLowerCase();
+      if(el.id){ parts.unshift('#'+CSS.escape(el.id)); break; }
+      const par=el.parentElement;
+      if(par){ const sibs=[...par.children].filter(c=>c.tagName===el.tagName); if(sibs.length>1) s+=':nth-of-type('+(sibs.indexOf(el)+1)+')'; }
+      parts.unshift(s); el=el.parentElement;
+    }
+    return parts.join('>');
+  }catch(e){ return ''; }
+}
+function context(el){
+  let secLabel='';
+  const sec=el.closest&&el.closest('section');
+  const doc=el.ownerDocument;
+  if(sec){
+    const lb=sec.getAttribute('aria-labelledby');
+    if(lb&&doc.getElementById(lb)) secLabel=doc.getElementById(lb).textContent.trim();
+    if(!secLabel){ const h=sec.querySelector('h1,h2,h3'); if(h) secLabel=h.textContent.trim(); }
+    if(!secLabel) secLabel=sec.getAttribute('aria-label')||'';
+  } else {
+    if(el.closest&&el.closest('footer')) secLabel='Footer';
+    else if(el.closest&&el.closest('header')) secLabel='Menu / header';
+  }
+  const snip=(el.textContent||'').trim().replace(/\s+/g,' ').slice(0,70);
+  return {secLabel:secLabel.replace(/\s+/g,' ').slice(0,80),snip};
+}
+function resolve(doc,pin){
+  let el=null; if(pin.sel){ try{ el=doc.querySelector(pin.sel); }catch(e){} }
+  if(el){ const r=el.getBoundingClientRect(); const sx=doc.defaultView.scrollX,sy=doc.defaultView.scrollY;
+    return { x:r.left+sx+(pin.fx||.5)*r.width, y:r.top+sy+(pin.fy||.5)*r.height, exact:true }; }
+  return { x:pin.pageX||40, y:pin.pageY||40, exact:false };
+}
+function renderPins(doc){
+  [...doc.querySelectorAll('.__rev-pin')].forEach(n=>n.remove());
+  store.pins.filter(p=>p.page===curKey).forEach(pin=>{
+    const pos=resolve(doc,pin);
+    const d=doc.createElement('div'); d.className='__rev-pin'+(pin.status==='remove'?' remove':(pin.status==='ok'?' ok':''));
+    d.dataset.id=pin.id; d.style.left=pos.x+'px'; d.style.top=pos.y+'px';
+    d.innerHTML='<div class="b"><span class="n">'+pin.n+'</span></div>';
+    doc.body.appendChild(d);
+  });
+}
+function currentDoc(){ try{return frame.contentDocument;}catch(e){return null;} }
+
+/* ---------- editor ---------- */
+const editor=document.getElementById('editor');
+function openEditor(id){
+  const pin=store.pins.find(p=>p.id===id); if(!pin) return; activeId=id;
+  document.getElementById('ed-num').textContent=pin.n;
+  document.getElementById('ed-ctx').textContent=pin.sec||('Pagina: '+KEYMAP[pin.page][1]);
+  document.getElementById('ed-snip').textContent=pin.snip?('“'+pin.snip+'”'):'';
+  document.getElementById('ed-text').value=pin.comment||'';
+  document.querySelectorAll('#ed-status button').forEach(b=>b.classList.toggle('on',b.dataset.s===pin.status));
+  drawThumbs(id);
+  editor.classList.add('show');
+  document.getElementById('ed-text').focus();
+}
+function closeEditor(removeIfEmpty){
+  if(removeIfEmpty&&activeId){
+    const pin=store.pins.find(p=>p.id===activeId);
+    if(pin&&!pin.status&&!(pin.comment&&pin.comment.trim())&&!(filesByPin[pin.id]&&filesByPin[pin.id].length)) removePin(activeId,true);
+  }
+  editor.classList.remove('show'); activeId=null;
+}
+document.getElementById('ed-text').addEventListener('input',e=>{ const p=store.pins.find(p=>p.id===activeId); if(p){p.comment=e.target.value;save();refresh();} });
+document.querySelectorAll('#ed-status button').forEach(b=>b.addEventListener('click',()=>{
+  const p=store.pins.find(p=>p.id===activeId); if(!p)return;
+  p.status=p.status===b.dataset.s?null:b.dataset.s;
+  document.querySelectorAll('#ed-status button').forEach(x=>x.classList.toggle('on',x.dataset.s===p.status));
+  save(); const doc=currentDoc(); if(doc)renderPins(doc); refresh();
+}));
+document.getElementById('ed-file').addEventListener('change',async e=>{
+  const id=activeId; filesByPin[id]=filesByPin[id]||[];
+  for(const f of [...e.target.files]){ const key=await idbAdd(id,f); filesByPin[id].push({name:f.name,blob:f,dbKey:key}); }
+  e.target.value=''; drawThumbs(id); refresh();
+});
+function drawThumbs(id){
+  const el=document.getElementById('ed-thumbs'); el.innerHTML='';
+  (filesByPin[id]||[]).forEach((entry,i)=>{
+    const t=document.createElement('div'); t.className='thumb';
+    t.innerHTML='<img src="'+URL.createObjectURL(entry.blob)+'" alt=""><button title="verwijder">×</button>';
+    t.querySelector('button').addEventListener('click',async()=>{ await idbDel(entry.dbKey); filesByPin[id].splice(i,1); drawThumbs(id); refresh(); });
+    el.appendChild(t);
+  });
+}
+document.getElementById('ed-del').addEventListener('click',()=>{ if(activeId) removePin(activeId,false); editor.classList.remove('show'); activeId=null; });
+document.getElementById('ed-done').addEventListener('click',()=>closeEditor(true));
+function removePin(id,silent){
+  store.pins=store.pins.filter(p=>p.id!==id); delete filesByPin[id]; idbDelPin(id); save();
+  const doc=currentDoc(); if(doc)renderPins(doc); refresh();
+  if(!silent) toast('Opmerking verwijderd');
+}
+
+function refresh(){ document.getElementById('n').textContent=store.pins.filter(p=>p.status||(p.comment&&p.comment.trim())||(filesByPin[p.id]&&filesByPin[p.id].length)).length; }
+
+/* ---------- export ---------- */
+function safeName(s){ return (s||'foto').replace(/[^a-zA-Z0-9._-]/g,'_'); }
+function buildMarkdown(){
+  const name=store.name||'', date=store.date||''; const photos=[];
+  let body='';
+  PAGES.forEach(([key,label,slugs])=>{
+    const pins=store.pins.filter(p=>p.page===key&&(p.status||(p.comment&&p.comment.trim())||(filesByPin[p.id]&&filesByPin[p.id].length)));
+    if(!pins.length) return;
+    body+='## PAGINA: '+label+' (/nl/'+(slugs.nl?slugs.nl+'/':'')+')\n\n';
+    pins.forEach(p=>{
+      body+='### '+(p.sec||'(algemeen)')+(p.status?' — '+STATUS_LABEL[p.status]:'')+'\n';
+      if(p.snip) body+='_bij: “'+p.snip+'”_\n';
+      if(p.comment&&p.comment.trim()) body+=p.comment.trim()+'\n';
+      const fl=filesByPin[p.id]||[];
+      if(fl.length){ const names=fl.map((entry,i)=>{ const path='images/'+safeName(key)+'__pin'+p.n+(fl.length>1?('_'+(i+1)):'')+'__'+safeName(entry.name); photos.push({path,blob:entry.blob}); return path; });
+        body+='📷 Nieuwe foto(’s) (in de zip): '+names.join(', ')+'\n'; }
+      body+='\n';
+    });
+  });
+  if(!body) body='(Geen opmerkingen aangeduid.)\n';
+  const preamble='# Coco Surf School — content changes from the school owner\n\n'+
+  '**Instructions for Claude Code:**\n'+
+  'You are updating the Coco Surf School website (repo: breynsv/coco-surfschool-final-v2).\n'+
+  '- The site is multilingual (FR / EN / NL) and is GENERATED. Do NOT edit the `*/index.html` files by hand.\n'+
+  '- Edit the content in `content/nl.mjs` (Dutch), then apply the SAME change to `content/fr.mjs` and `content/en.mjs` — translate each change into those languages. FR is the default language.\n'+
+  '- After editing, run `node build.mjs` to regenerate all pages + sitemap, then commit and push.\n'+
+  '- Each note below is a comment the owner pinned on a spot of the DUTCH site. The heading is the section; the _bij:_ line quotes the exact text she clicked on, so you can locate it. Statuses: OK = leave as is, AANPASSEN = change per the note, VERWIJDEREN = remove.\n'+
+  '- Attached photos are in the `images/` folder of this zip. Move each into `assets/images/` and update the relevant `<img>` src in the content module(s).\n\n'+
+  'Reviewer: '+(name||'(naam niet ingevuld)')+' — '+(date||'(datum niet ingevuld)')+'\n\n---\n\n';
+  return {md:preamble+body,photos};
+}
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+document.getElementById('btn-copy').addEventListener('click',async()=>{
+  const {md,photos}=buildMarkdown(); let text=md;
+  if(photos.length) text+='\n> ('+photos.length+' foto’s geselecteerd — stuur die mee via de Download-knop.)\n';
+  try{ await navigator.clipboard.writeText(text); toast('Gekopieerd! Plak in WhatsApp of e-mail.'); }
+  catch(e){ const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();toast('Gekopieerd!'); }
+});
+
+/* ZIP (store-only, no dependency) */
+const CRC=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;})();
+function crc32(u){let c=0xFFFFFFFF;for(let i=0;i<u.length;i++)c=CRC[(c^u[i])&0xFF]^(c>>>8);return (c^0xFFFFFFFF)>>>0;}
+function dt(d){return((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()/2))&0xFFFF;}
+function dd(d){return(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;}
+async function makeZip(entries){
+  const enc=new TextEncoder(),now=new Date(),chunks=[],central=[];let off=0;
+  for(const e of entries){const nb=enc.encode(e.name),crc=crc32(e.data),sz=e.data.length;
+    const lh=new DataView(new ArrayBuffer(30));lh.setUint32(0,0x04034b50,true);lh.setUint16(4,20,true);lh.setUint16(6,0x0800,true);lh.setUint16(8,0,true);lh.setUint16(10,dt(now),true);lh.setUint16(12,dd(now),true);lh.setUint32(14,crc,true);lh.setUint32(18,sz,true);lh.setUint32(22,sz,true);lh.setUint16(26,nb.length,true);lh.setUint16(28,0,true);
+    chunks.push(new Uint8Array(lh.buffer),nb,e.data);
+    const ch=new DataView(new ArrayBuffer(46));ch.setUint32(0,0x02014b50,true);ch.setUint16(4,20,true);ch.setUint16(6,20,true);ch.setUint16(8,0x0800,true);ch.setUint16(10,0,true);ch.setUint16(12,dt(now),true);ch.setUint16(14,dd(now),true);ch.setUint32(16,crc,true);ch.setUint32(20,sz,true);ch.setUint32(24,sz,true);ch.setUint16(28,nb.length,true);ch.setUint32(42,off,true);
+    central.push(new Uint8Array(ch.buffer),nb);off+=30+nb.length+sz;}
+  let clen=0;central.forEach(c=>clen+=c.length);
+  const eo=new DataView(new ArrayBuffer(22));eo.setUint32(0,0x06054b50,true);eo.setUint16(8,entries.length,true);eo.setUint16(10,entries.length,true);eo.setUint32(12,clen,true);eo.setUint32(16,off,true);
+  return new Blob([...chunks,...central,new Uint8Array(eo.buffer)],{type:'application/zip'});
+}
+document.getElementById('btn-dl').addEventListener('click',async()=>{
+  const {md,photos}=buildMarkdown(); const enc=new TextEncoder();
+  if(!photos.length){ dl(new Blob([md],{type:'text/markdown'}),'coco-wijzigingen.md'); toast('Gedownload: coco-wijzigingen.md'); return; }
+  const entries=[{name:'feedback.md',data:enc.encode(md)}];
+  for(const p of photos) entries.push({name:p.path,data:new Uint8Array(await p.blob.arrayBuffer())});
+  dl(await makeZip(entries),'coco-wijzigingen.zip'); toast('Gedownload: zip (tekst + '+photos.length+' foto’s)');
+});
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);}
+
+document.getElementById('btn-clear').addEventListener('click',()=>{
+  if(!confirm('Alle opmerkingen wissen? Dit kan niet ongedaan gemaakt worden.'))return;
+  store={pins:[],counter:0,lang:curLang};for(const k in filesByPin)delete filesByPin[k];idbClear();save();
+  const doc=currentDoc();if(doc)renderPins(doc);refresh();closeEditor(false);
+});
+
+// re-place pins on scroll/resize inside the frame (keep anchored)
+setInterval(()=>{ const doc=currentDoc(); if(doc&&doc.querySelector('.__rev-pin')) renderPins(doc); },900);
+
+// how-to overlay + reviewer name/date
+const helpOv=document.getElementById('help-ov');
+const nameEl=document.getElementById('who-name'), dateEl=document.getElementById('who-date');
+nameEl.value=store.name||''; dateEl.value=store.date||'';
+nameEl.addEventListener('input',()=>{store.name=nameEl.value;save();});
+dateEl.addEventListener('input',()=>{store.date=dateEl.value;save();});
+document.getElementById('help-go').addEventListener('click',()=>{helpOv.classList.remove('show');localStorage.setItem('coco-help-seen','1');});
+document.getElementById('btn-help').addEventListener('click',()=>helpOv.classList.add('show'));
+if(!localStorage.getItem('coco-help-seen')) helpOv.classList.add('show');
+
+refresh(); loadPage(curLang,'home');
+// restore saved photos from IndexedDB
+idbAll().then(recs=>{ recs.forEach(r=>{ (filesByPin[r.pinId]=filesByPin[r.pinId]||[]).push({name:r.name,blob:r.blob,dbKey:r.key}); }); refresh(); const doc=currentDoc(); if(doc) renderPins(doc); });
+</script>
+</body>
+</html>
