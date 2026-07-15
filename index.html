@@ -199,7 +199,8 @@ const frame=document.getElementById('frame');
 const stage=document.getElementById('stage');
 let curLang=store.lang||'nl', curKey='home';
 
-function urlFor(lang,key){ const slug=KEYMAP[key][2][lang]; return LIVE+lang+'/'+(slug?slug+'/':''); }
+const CACHEBUST=Date.now(); // fresh load each session so the reviewer always sees the latest site
+function urlFor(lang,key){ const slug=KEYMAP[key][2][lang]; return LIVE+lang+'/'+(slug?slug+'/':'')+'?_='+CACHEBUST; }
 function loadPage(lang,key){ curLang=lang; curKey=key; store.lang=lang; save(); frame.src=urlFor(lang,key); syncBar(); }
 
 // page dropdown
