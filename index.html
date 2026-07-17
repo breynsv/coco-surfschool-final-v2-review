@@ -173,6 +173,18 @@ const PAGES=[
   ['team','Teambuilding',{fr:'team-building-surf',en:'team-building',nl:'surf-teambuilding',de:'surf-teambuilding',es:'surf-team-building'}],
   ['learn','Leren surfen',{fr:'apprendre-a-surfer',en:'learn-to-surf',nl:'leren-surfen',de:'surfen-lernen',es:'aprender-a-surfear'}],
 ];
+const LABELS={
+  home:{nl:'Startpagina',fr:'Accueil',de:'Startseite',en:'Home',es:'Inicio'},
+  lessons:{nl:'Lessen & tarieven',fr:'Cours & tarifs',de:'Kurse & Preise',en:'Lessons & rates',es:'Clases & tarifas'},
+  coach:{nl:'Coach (Annelies)',fr:'Coach (Annelies)',de:'Coach (Annelies)',en:'Coach (Annelies)',es:'Coach (Annelies)'},
+  stay:{nl:'Verblijf',fr:'Hébergement',de:'Unterkunft',en:'Stay',es:'Alojamiento'},
+  rental:{nl:'Verhuur',fr:'Location',de:'Verleih',en:'Rental',es:'Alquiler'},
+  contact:{nl:'Contact',fr:'Contact',de:'Kontakt',en:'Contact',es:'Contacto'},
+  hossegor:{nl:'Surfen in Hossegor',fr:'Surf à Hossegor',de:'Surfen in Hossegor',en:'Surfing in Hossegor',es:'Surf en Hossegor'},
+  seignosse:{nl:'Surfen in Seignosse',fr:'Surf à Seignosse',de:'Surfen in Seignosse',en:'Surfing in Seignosse',es:'Surf en Seignosse'},
+  team:{nl:'Teambuilding',fr:'Team building',de:'Teambuilding',en:'Team building',es:'Team building'},
+  learn:{nl:'Leren surfen',fr:'Apprendre à surfer',de:'Surfen lernen',en:'Learn to surf',es:'Aprender a surfear'},
+};
 const KEYMAP={}; PAGES.forEach(p=>KEYMAP[p[0]]=p);
 const STATUS_LABEL={ok:'OK',change:'AANPASSEN',remove:'VERWIJDEREN'};
 const LS='coco-annot-v1';
@@ -206,13 +218,14 @@ function loadPage(lang,key){ curLang=lang; curKey=key; store.lang=lang; save(); 
 
 // page dropdown
 const sel=document.getElementById('page-sel');
-PAGES.forEach(([k,label])=>{ const o=document.createElement('option'); o.value=k; o.textContent=label; sel.appendChild(o); });
+function renderPageOptions(){ sel.innerHTML=''; PAGES.forEach(([k,label])=>{ const o=document.createElement('option'); o.value=k; o.textContent=(LABELS[k]&&LABELS[k][curLang])||label; sel.appendChild(o); }); }
+renderPageOptions();
 sel.addEventListener('change',()=>loadPage(curLang,sel.value));
 document.querySelectorAll('#langs button').forEach(b=>b.addEventListener('click',()=>{
   document.querySelectorAll('#langs button').forEach(x=>x.classList.toggle('on',x===b));
   loadPage(b.dataset.l,curKey);
 }));
-function syncBar(){ sel.value=curKey; document.querySelectorAll('#langs button').forEach(x=>x.classList.toggle('on',x.dataset.l===curLang)); }
+function syncBar(){ renderPageOptions(); sel.value=curKey; document.querySelectorAll('#langs button').forEach(x=>x.classList.toggle('on',x.dataset.l===curLang)); }
 
 // mode toggle
 const modeEl=document.getElementById('mode');
