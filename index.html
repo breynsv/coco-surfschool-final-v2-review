@@ -102,7 +102,7 @@
   <div class="brand"><span>🏄</span> Wijzigingen</div>
   <select id="page-sel" aria-label="Kies pagina"></select>
   <div class="langs" id="langs">
-    <button data-l="nl" class="on">NL</button><button data-l="fr">FR</button><button data-l="en">EN</button>
+    <button data-l="nl" class="on">NL</button><button data-l="fr">FR</button><button data-l="de">DE</button><button data-l="en">EN</button><button data-l="es">ES</button>
   </div>
   <div class="mode on" id="mode" role="switch" aria-checked="true" title="Aan: klikken plaatst een opmerking. Uit: gebruik de website normaal.">
     <span class="switch"></span><span class="lbl">Klik = opmerking</span>
@@ -162,16 +162,16 @@
 const LIVE='https://breynsv.github.io/coco-surfschool-final-v2/';
 const BASEPATH='/coco-surfschool-final-v2/';
 const PAGES=[
-  ['home','Startpagina',{fr:'',en:'',nl:''}],
-  ['lessons','Lessen & tarieven',{fr:'cours-de-surf',en:'surf-lessons',nl:'surflessen'}],
-  ['coach','Coach (Annelies)',{fr:'monitrice-de-surf',en:'surf-coach',nl:'surfcoach'}],
-  ['stay','Verblijf',{fr:'hebergement',en:'accommodation',nl:'accommodatie'}],
-  ['rental','Verhuur / Location',{fr:'location',en:'rental',nl:'verhuur'}],
-  ['contact','Contact',{fr:'contact',en:'contact',nl:'contact'}],
-  ['hossegor','Surfen in Hossegor',{fr:'cours-de-surf-hossegor',en:'surf-lessons-hossegor',nl:'surflessen-hossegor'}],
-  ['seignosse','Surfen in Seignosse',{fr:'cours-de-surf-seignosse',en:'surf-lessons-seignosse',nl:'surflessen-seignosse'}],
-  ['team','Teambuilding',{fr:'team-building-surf',en:'team-building',nl:'surf-teambuilding'}],
-  ['learn','Leren surfen',{fr:'apprendre-a-surfer',en:'learn-to-surf',nl:'leren-surfen'}],
+  ['home','Startpagina',{fr:'',en:'',nl:'',de:'',es:''}],
+  ['lessons','Lessen & tarieven',{fr:'cours-de-surf',en:'surf-lessons',nl:'surflessen',de:'surfkurse',es:'clases-de-surf'}],
+  ['coach','Coach (Annelies)',{fr:'monitrice-de-surf',en:'surf-coach',nl:'surfcoach',de:'surf-coach',es:'monitora-de-surf'}],
+  ['stay','Verblijf',{fr:'hebergement',en:'accommodation',nl:'accommodatie',de:'unterkunft',es:'alojamiento'}],
+  ['rental','Verhuur / Location',{fr:'location',en:'rental',nl:'verhuur',de:'verleih',es:'alquiler'}],
+  ['contact','Contact',{fr:'contact',en:'contact',nl:'contact',de:'kontakt',es:'contacto'}],
+  ['hossegor','Surfen in Hossegor',{fr:'cours-de-surf-hossegor',en:'surf-lessons-hossegor',nl:'surflessen-hossegor',de:'surfkurse-hossegor',es:'clases-de-surf-hossegor'}],
+  ['seignosse','Surfen in Seignosse',{fr:'cours-de-surf-seignosse',en:'surf-lessons-seignosse',nl:'surflessen-seignosse',de:'surfkurse-seignosse',es:'clases-de-surf-seignosse'}],
+  ['team','Teambuilding',{fr:'team-building-surf',en:'team-building',nl:'surf-teambuilding',de:'surf-teambuilding',es:'surf-team-building'}],
+  ['learn','Leren surfen',{fr:'apprendre-a-surfer',en:'learn-to-surf',nl:'leren-surfen',de:'surfen-lernen',es:'aprender-a-surfear'}],
 ];
 const KEYMAP={}; PAGES.forEach(p=>KEYMAP[p[0]]=p);
 const STATUS_LABEL={ok:'OK',change:'AANPASSEN',remove:'VERWIJDEREN'};
