@@ -389,9 +389,11 @@ function buildMarkdown(){
   PAGES.forEach(([key,label,slugs])=>{
     const pins=store.pins.filter(p=>p.page===key&&(p.status||(p.comment&&p.comment.trim())||(filesByPin[p.id]&&filesByPin[p.id].length)));
     if(!pins.length) return;
-    body+='## PAGINA: '+label+' (/nl/'+(slugs.nl?slugs.nl+'/':'')+')\n\n';
+    body+='## PAGINA: '+label+'\n\n';
     pins.forEach(p=>{
-      body+='### '+(p.sec||'(algemeen)')+(p.status?' — '+STATUS_LABEL[p.status]:'')+'\n';
+      const pl=(p.lang||'nl'), pslug=(slugs[pl]!==undefined?slugs[pl]:'');
+      body+='### ['+pl.toUpperCase()+'] '+(p.sec||'(algemeen)')+(p.status?' — '+STATUS_LABEL[p.status]:'')+'\n';
+      body+='_pagina: /'+pl+'/'+(pslug?pslug+'/':'')+'_\n';
       if(p.snip) body+='_bij: “'+p.snip+'”_\n';
       if(p.comment&&p.comment.trim()) body+=p.comment.trim()+'\n';
       const fl=filesByPin[p.id]||[];
@@ -405,9 +407,10 @@ function buildMarkdown(){
   '**Instructions for Claude Code:**\n'+
   'You are updating the Coco Surf School website (repo: breynsv/coco-surfschool-final-v2).\n'+
   '- The site is multilingual (FR / EN / NL) and is GENERATED. Do NOT edit the `*/index.html` files by hand.\n'+
-  '- Edit the content in `content/nl.mjs` (Dutch), then apply the SAME change to `content/fr.mjs` and `content/en.mjs` — translate each change into those languages. FR is the default language.\n'+
+  '- Notes can come from ANY language version. Each note is tagged with the language the owner was viewing (e.g. [FR], [NL]) plus a _pagina:_ line giving the exact page + language.\n'+
+  '- Apply each change to THAT language’s content module first (`content/{fr,nl,en,de,es}.mjs`), then translate/propagate the SAME change to the other four languages. FR is the default language.\n'+
   '- After editing, run `node build.mjs` to regenerate all pages + sitemap, then commit and push.\n'+
-  '- Each note below is a comment the owner pinned on a spot of the DUTCH site. The heading is the section; the _bij:_ line quotes the exact text she clicked on, so you can locate it. Statuses: OK = leave as is, AANPASSEN = change per the note, VERWIJDEREN = remove.\n'+
+  '- The heading is the section; the _bij:_ line quotes the exact text she clicked on, so you can locate it. Statuses: OK = leave as is, AANPASSEN = change per the note, VERWIJDEREN = remove.\n'+
   '- Attached photos are in the `images/` folder of this zip. Move each into `assets/images/` and update the relevant `<img>` src in the content module(s).\n\n'+
   'Reviewer: '+(name||'(naam niet ingevuld)')+' — '+(date||'(datum niet ingevuld)')+'\n\n---\n\n';
   return {md:preamble+body,photos};
